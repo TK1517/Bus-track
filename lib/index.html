@@ -1,0 +1,61 @@
+class RoleSelectionScreen extends StatelessWidget {
+const RoleSelectionScreen({super.key});
+
+@override
+Widget build(BuildContext context) {
+return Scaffold(
+body: Container(
+decoration: const BoxDecoration(
+gradient: LinearGradient(
+colors: [Color(0xFF667eea), Color(0xFF764ba2)],
+),
+),
+child: Center(
+child: Column(
+mainAxisAlignment: MainAxisAlignment.center,
+children: [
+const Text(
+"Welcome 🚍🎓",
+style: TextStyle(fontSize: 40, color: Colors.white, fontWeight: FontWeight.bold),
+),
+const SizedBox(height: 10),
+const Text(
+"Choose your role to continue",
+style: TextStyle(fontSize: 16, color: Colors.white70),
+),
+const SizedBox(height: 50),
+Row(
+mainAxisAlignment: MainAxisAlignment.center,
+children: [
+_buildRoleCard(context, "Driver", "Login as a Driver", const DriverLoginScreen()),
+const SizedBox(width: 20),
+_buildRoleCard(context, "Student", "Login as a Student", const StudentLoginScreen()),
+],
+)
+],
+),
+),
+),
+);
+}
+
+Widget _buildRoleCard(BuildContext context, String title, String subtitle, Widget page) {
+return GestureDetector(
+onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => page)),
+child: Container(
+width: 160,
+height: 180,
+padding: const EdgeInsets.all(20),
+decoration: glassDecoration,
+child: Column(
+mainAxisAlignment: MainAxisAlignment.center,
+children: [
+Text(title, style: const TextStyle(fontSize: 24, color: Colors.white, fontWeight: FontWeight.bold)),
+const SizedBox(height: 10),
+Text(subtitle, textAlign: TextAlign.center, style: const TextStyle(color: Colors.white70)),
+],
+),
+),
+);
+}
+}

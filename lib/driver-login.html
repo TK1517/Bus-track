@@ -1,0 +1,87 @@
+class DriverLoginScreen extends StatefulWidget {
+const DriverLoginScreen({super.key});
+
+@override
+_DriverLoginScreenState createState() => _DriverLoginScreenState();
+}
+
+class _DriverLoginScreenState extends State<DriverLoginScreen> {
+    final _emailController = TextEditingController();
+    final _passwordController = TextEditingController();
+    String? _errorMessage;
+
+    Future<void> _login() async {
+        try {
+        await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+        );
+        // Navigate to Dashboard on success
+        if (mounted) {
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const DriverDashboard()));
+        }
+        } catch (e) {
+        setState(() {
+        _errorMessage = "Invalid email or password";
+        });
+        }
+        }
+
+        @override
+        Widget build(BuildContext context) {
+        return Scaffold(
+        body: Container(
+        decoration: driverBackground,
+        child: Center(
+        child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 30),
+        padding: const EdgeInsets.all(40),
+        decoration: glassDecoration, // Using our glass style
+        child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+        const Text("🚍 Driver Login", style: TextStyle(fontSize: 28, color: Colors.white)),
+        const SizedBox(height: 30),
+        _buildInput("Driver Email", _emailController, false),
+        const SizedBox(height: 15),
+        _buildInput("Password", _passwordController, true),
+        const SizedBox(height: 25),
+        SizedBox(
+        width: double.infinity,
+        child: ElevatedButton(
+        onPressed: _login,
+        style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.white,
+        foregroundColor: const Color(0xFF5a2d82), // Accent color
+        padding: const EdgeInsets.symmetric(vertical: 15),
+        ),
+        child: const Text("Login", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+        ),
+        ),
+        if (_errorMessage != null)
+        Padding(
+        padding: const EdgeInsets.only(top: 15),
+        child: Text(_errorMessage!, style: const TextStyle(color: Color(0xFFffdede))),
+        )
+        ],
+        ),
+        ),
+        ),
+        ),
+        );
+        }
+
+        Widget _buildInput(String hint, TextEditingController controller, bool isPassword) {
+        return TextField(
+        controller: controller,
+        obscureText: isPassword,
+        style: const TextStyle(color: Colors.black),
+        decoration: InputDecoration(
+        filled: true,
+        fillColor: Colors.white.withOpacity(0.95),
+        hintText: hint,
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
+        ),
+        );
+        }
+        }

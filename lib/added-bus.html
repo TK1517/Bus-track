@@ -1,0 +1,153 @@
+class DriverDashboard extends StatelessWidget {
+const DriverDashboard({super.key});
+
+@override
+Widget build(BuildContext context) {
+final user = FirebaseAuth.instance.currentUser;
+
+return Scaffold(
+extendBodyBehindAppBar: true,
+appBar: AppBar(
+backgroundColor: Colors.transparent,
+elevation: 0,
+title: const Text("Your Buses"),
+actions: [
+IconButton(
+icon: const Icon(Icons.logout),
+onPressed: () async {
+await FirebaseAuth.instance.signOut();
+Navigator.pop(context); // Go back to login
+},
+)
+],
+),
+body: Container(
+decoration: driverBackground,
+child: StreamBuilder(
+stream: FirebaseFirestore.instance
+.collection('drivers')
+.doc(user!.uid)
+.collection('buses')
+.snapshots(),
+builder: (context, snapshot) {
+if (!snapshot.hasData) return const Center(child: CircularProgressIndicator());
+
+var buses = snapshot.data!.docs;
+
+if (buses.isEmpty) {
+return const Center(child: Text("No buses added yet", style: TextStyle(color: Colors.white)));
+}
+
+return ListView.builder(
+padding: const EdgeInsets.only(top: 100, left: 20, right: 20),
+itemCount: buses.length,
+itemBuilder: (context, index) {
+var bus = buses[index];
+return Container(
+margin: const EdgeInsets.only(bottom: 15),
+padding: const EdgeInsets.all(15),
+decoration: BoxDecoration(
+color: Colors.white.withOpacity(0.15),
+borderRadius: BorderRadius.circular(12),
+),
+child: Row(
+children: [
+CircleAvatar(
+backgroundColor: const Color(0xFFffdd57),
+child: Text("${index + 1}", style: const TextStyle(color: Colors.black)),
+),
+const SizedBox(width: 15),
+Text(
+"${bus['busNumber']} (${bus['busId']})",
+style: const TextStyle(color: Colors.white, fontSize: 18),
+),
+],
+),
+);
+},
+);
+},
+),
+),
+floatingActionButton: FloatingActionButton.extended(
+onPressed: () => _showAddBusDialog(context),
+backgroundColor: const Color(0xFFffdd57),
+label: const Text("Add New Bus", style: TextStyle(color: Colors.black)),
+icon: const Icon(Icons.add, color: Colors.black),
+),
+);
+}
+
+void _showAddBusDialog(BuildContext context) {
+final busNumController = TextEditingController();
+final busIdController = TextEditingController();
+final user = FirebaseAuth.instance.currentUser;
+
+showDialog(
+context: context,
+builder: (context) {
+return AlertDialog(
+backgroundColor: const Color(0xFF4b2b6f),
+title: const Text("➕ Add Bus", style: TextStyle(color: Colors.white)),
+content: Column(
+mainAxisSize: MainAxisSize.min,
+children: [
+TextField(
+controller: busNumController,
+style: const TextStyle(color: Colors.white),
+decoration: const InputDecoration(
+hintText: "Bus Number", hintStyle: TextStyle(color: Colors.white54)),
+),
+TextField(
+controller: busIdController,
+style: const TextStyle(color: Colors.white),
+decoration: const InputDecoration(
+hintText: "Bus ID", hintStyle: TextStyle(color: Colors.white54)),
+),
+],
+),
+actions: [
+TextButton(
+onPressed: () async {
+final busId = busIdController.text.trim().toUpperCase();
+final busNum = busNumController.text.trim();
+
+if (busId.isEmpty || busNum.isEmpty) return;
+
+// 1. Check if Bus ID exists in 'validBuses' collection (Logic from your JS)
+final validBusSnap = await FirebaseFirestore.instance
+.collection('validBuses')
+.doc(busId)
+.get();
+
+if (!validBusSnap.exists) {
+ScaffoldMessenger.of(context).showSnackBar(
+const SnackBar(content: Text("❌ Invalid Bus ID"), backgroundColor: Colors.red),
+);
+return;
+}
+
+// 2. Add to driver's collection
+await FirebaseFirestore.instance
+.collection('drivers')
+.doc(user!.uid)
+.collection('buses')
+.add({
+'busNumber': busNum,
+'busId': busId,
+'createdAt': FieldValue.serverTimestamp(),
+});
+
+Navigator.pop(context);
+ScaffoldMessenger.of(context).showSnackBar(
+const SnackBar(content: Text("✅ Bus Added Successfully"), backgroundColor: Colors.green),
+);
+},
+child: const Text("Add", style: TextStyle(color: Color(0xFFbaffc9))),
+)
+],
+);
+},
+);
+}
+}
