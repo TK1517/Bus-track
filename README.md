@@ -1,16 +1,29 @@
-# bustrack
+# Bus Track – Bus Tracking Application
 
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Bus Track is a Flutter-based application developed using **Dart** that aims to provide a basic foundation for a **bus tracking system**. The project is currently in its initial stage and serves as a starting point for building a real-time bus tracking application.
+## Features
+- Flutter project structure supporting:
+  - Android
+  - iOS
+  - Web
+  - Desktop
+- Clean and scalable codebase
+- Ready to integrate:
+  - Real-time location tracking
+  - Map services
+  - Backend APIs or databases
+## Tech Stack
+- **Frontend:** Flutter  
+- **Language:** Dart  
+- **Version Control:** Git & GitHub  
+## Project Structure
+Bus-track/
+├── lib/                # Main application code
+├── android/            # Android-specific files
+├── ios/                # iOS-specific files
+├── web/                # Web support
+├── linux/              # Linux desktop support
+├── windows/            # Windows desktop support
+├── macos/               # macOS desktop support
+├── test/               # Test files
+└── pubspec.yaml        # Project dependencies
