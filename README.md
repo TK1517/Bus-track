@@ -4,9 +4,7 @@ Bus Track is a Flutter-based application developed using **Dart** that aims to p
 ## Features
 - Flutter project structure supporting:
   - Android
-  - iOS
   - Web
-  - Desktop
 - Clean and scalable codebase
 - Ready to integrate:
   - Real-time location tracking
